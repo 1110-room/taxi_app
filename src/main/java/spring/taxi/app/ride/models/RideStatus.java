@@ -1,4 +1,4 @@
-package spring.taxi.app.room.models;
+package spring.taxi.app.ride.models;
 
 
 public enum RideStatus {
