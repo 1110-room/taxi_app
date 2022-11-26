@@ -1,6 +1,10 @@
 package spring.taxi.app.room.models;
 
+import org.springframework.data.jpa.repository.Query;
+import spring.taxi.app.user.models.User;
+
 import javax.persistence.*;
+import java.util.List;
 
 
 @Entity
@@ -18,9 +22,11 @@ public class Ride {
     @Enumerated(value = EnumType.STRING)
     private RideStatus status;
 
-//    @OneToMany(mappedBy = "user")
-//    private List<User> members;
+    @OneToMany(mappedBy = "ride")
+    private List<User> members;
 
-//    @OneToOne(mappedBy = "ride")
-//    private User owner;
+    @OneToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
 }
