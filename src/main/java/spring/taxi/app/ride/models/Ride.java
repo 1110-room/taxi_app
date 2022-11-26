@@ -6,9 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
+import spring.taxi.app.user.models.User;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 
 @Entity
@@ -45,9 +47,9 @@ public class Ride {
     @Enumerated(value = EnumType.STRING)
     private RideStatus status = RideStatus.OPEN;
 
-//    @OneToMany(mappedBy = "user")
-//    private List<User> members;
+    @OneToMany(mappedBy = "ride")
+    private List<User> members;
 
-//    @OneToOne(mappedBy = "ride")
-//    private User owner;
+    @OneToOne(mappedBy = "ownersRide")
+    private User owner;
 }
