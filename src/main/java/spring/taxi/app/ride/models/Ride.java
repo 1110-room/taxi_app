@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 import spring.taxi.app.user.models.User;
 
@@ -50,6 +51,8 @@ public class Ride {
     @OneToMany(mappedBy = "ride")
     private List<User> members;
 
-    @OneToOne(mappedBy = "ownersRide")
+    @OneToOne
+    @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;
+
 }
