@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface RideRepo extends JpaRepository<Ride, Long> {
-    @Query(value = "select r from Ride r inner join User u on u.ride.id = r.id where u.id = :user_id")
+    @Query(value = "select r.* from rides r inner join ride_user ru on r.id = ru.ride_id where ru.user_id = :user_id", nativeQuery = true)
     List<Ride> getUserRideHistory(@Param("user_id") long userId);
 
 //    List<Ride> findByMembersContains(User user);

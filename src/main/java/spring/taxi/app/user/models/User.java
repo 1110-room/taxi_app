@@ -1,6 +1,6 @@
 package spring.taxi.app.user.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@JsonIgnoreProperties
 public class User {
 
     @Id
@@ -30,21 +31,24 @@ public class User {
     private boolean ready = false;
 
     @OneToMany(mappedBy = "user")
+    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
     private List<Review> reviews;
 
-    @OneToOne
-    @JoinColumn(name = "ride_id")
-    private Ride ride;
+    @ManyToMany(mappedBy = "members")
+    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
+    private List<Ride> ride;
 
     @OneToOne(mappedBy = "owner")
     @Transient
     private Ride ownersRide;
 
     public boolean isOwner(){
-        return ride.getOwner().equals(this);
+        return ownersRide == null;
     }
 
-    public User(String name, String surname, Role role, boolean ready, List<Review> reviews, Ride ride, Ride ownersRide) {
+    public User(String name, String surname, Role role, boolean ready, List<Review> reviews, List<Ride> ride, Ride ownersRide) {
         this.name = name;
         this.surname = surname;
         this.role = role;
