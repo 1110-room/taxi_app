@@ -1,6 +1,6 @@
 package spring.taxi.app.user.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,12 +17,19 @@ public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private long id;
 
     private int score;
 
+    @ManyToOne()
+    @JoinColumn(name = "leaving_user_id")
+    @JsonIncludeProperties(value = {"id", "name", "surname"})
+    private User leavingUser;
+
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "receiving_user_id")
+    @JsonIncludeProperties(value = {"id", "name", "surname"})
+    private User receivingUser;
 
 }

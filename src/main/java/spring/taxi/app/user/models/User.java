@@ -31,30 +31,35 @@ public class User {
 
     private boolean ready = false;
 
-    @OneToMany(mappedBy = "user")
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-    @JsonIdentityReference(alwaysAsId=true)
-    private List<Review> reviews;
+    @OneToMany(mappedBy = "receivingUser")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    private List<Review> receivedReviews;
+
+    @OneToMany(mappedBy = "leavingUser")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    private List<Review> leavedReviews;
 
     @ManyToMany(mappedBy = "members")
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-    @JsonIdentityReference(alwaysAsId=true)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     private List<Ride> ride;
 
     @OneToOne(mappedBy = "owner")
     @Transient
     private Ride ownersRide;
 
-    public boolean isOwner(){
+    public boolean isOwner() {
         return ownersRide == null;
     }
 
-    public User(String name, String surname, Role role, boolean ready, List<Review> reviews, List<Ride> ride, Ride ownersRide) {
+    public User(String name, String surname, Role role, boolean ready, List<Ride> ride, Ride ownersRide) {
         this.name = name;
         this.surname = surname;
         this.role = role;
         this.ready = ready;
-        this.reviews = reviews;
+//        this.reviews = reviews;
         this.ride = ride;
         this.ownersRide = ownersRide;
     }
