@@ -1,5 +1,6 @@
 package spring.taxi.app.user.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,7 +24,7 @@ public class User {
 
     private String surname;
 
-    // переделать
+    @Enumerated(value = EnumType.STRING)
     private Role role = Role.USER;
 
     private boolean ready = false;
@@ -31,18 +32,25 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Review> reviews;
 
-
-//    private boolean isOwner;
-
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "ride_id")
     private Ride ride;
 
-    @OneToOne
-    @JoinColumn(name = "owner_ride_id")
+    @OneToOne(mappedBy = "owner")
+    @Transient
     private Ride ownersRide;
 
     public boolean isOwner(){
         return ride.getOwner().equals(this);
+    }
+
+    public User(String name, String surname, Role role, boolean ready, List<Review> reviews, Ride ride, Ride ownersRide) {
+        this.name = name;
+        this.surname = surname;
+        this.role = role;
+        this.ready = ready;
+        this.reviews = reviews;
+        this.ride = ride;
+        this.ownersRide = ownersRide;
     }
 }
