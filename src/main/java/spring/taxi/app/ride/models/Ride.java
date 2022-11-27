@@ -37,12 +37,12 @@ public class Ride {
     @Column(name = "date_from")
     @JsonProperty("date_from")
     @DateTimeFormat
-    private Date dateFrom = new Date();
+    private Date dtFrom = new Date();
 
     @Column(name = "date_to")
     @JsonProperty("date_to")
     @DateTimeFormat
-    private Date dateTo;
+    private Date dtTo;
 
     @Enumerated(value = EnumType.STRING)
     private RideStatus status = RideStatus.OPEN;
@@ -53,12 +53,14 @@ public class Ride {
             joinColumns = @JoinColumn(name = "ride_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-    @JsonIdentityReference(alwaysAsId=true)
+    @JsonIncludeProperties(value = {"id", "name", "surname"})
     private List<User> members;
 
     @OneToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
+//    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+//    @JsonIdentityReference(alwaysAsId=true)
+    @JsonIncludeProperties(value = {"id", "name", "surname"})
     private User owner;
 
 }
