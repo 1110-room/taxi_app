@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import spring.taxi.app.ride.models.Ride;
+import spring.taxi.app.ride.models.RideStatus;
 import spring.taxi.app.ride.repos.RideRepo;
 import spring.taxi.app.user.services.UserService;
 
@@ -36,10 +37,11 @@ public class RideController {
 
     @GetMapping("/history")
     public List<Ride> userRideHistory(@RequestParam("user_id") long userId) {
-//        List<Ride> rideHistory = userService.getRideHistory(userId);
-//        if (rideHistory == null) {
-//            return ResponseEntity.badRequest().body("User doesn't exists!");
-//        }
         return rideRepo.getUserRideHistory(userId);
+    }
+
+    @GetMapping("/open-line")
+    public List<Ride> getOpenRidesLine() {
+        return rideRepo.getOpenRides();
     }
 }

@@ -7,6 +7,7 @@ import lombok.Setter;
 import spring.taxi.app.ride.models.Ride;
 
 import javax.persistence.*;
+import javax.swing.text.View;
 import java.util.List;
 
 @Entity
