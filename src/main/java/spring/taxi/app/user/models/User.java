@@ -1,5 +1,6 @@
 package spring.taxi.app.user.models;
 
+import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@JsonIgnoreProperties
 public class User {
 
     @Id
@@ -23,26 +25,36 @@ public class User {
 
     private String surname;
 
-    // переделать
+    @Enumerated(value = EnumType.STRING)
     private Role role = Role.USER;
 
     private boolean ready = false;
 
     @OneToMany(mappedBy = "user")
+    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
     private List<Review> reviews;
 
+    @ManyToMany(mappedBy = "members")
+    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
+    private List<Ride> ride;
 
-//    private boolean isOwner;
-
-    @ManyToOne
-    @JoinColumn(name = "ride_id")
-    private Ride ride;
-
-    @OneToOne
-    @JoinColumn(name = "owner_ride_id")
+    @OneToOne(mappedBy = "owner")
+    @Transient
     private Ride ownersRide;
 
     public boolean isOwner(){
-        return ride.getOwner().equals(this);
+        return ownersRide == null;
+    }
+
+    public User(String name, String surname, Role role, boolean ready, List<Review> reviews, List<Ride> ride, Ride ownersRide) {
+        this.name = name;
+        this.surname = surname;
+        this.role = role;
+        this.ready = ready;
+        this.reviews = reviews;
+        this.ride = ride;
+        this.ownersRide = ownersRide;
     }
 }
