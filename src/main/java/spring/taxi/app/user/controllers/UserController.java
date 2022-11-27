@@ -8,7 +8,9 @@ import spring.taxi.app.user.models.Review;
 import spring.taxi.app.user.models.User;
 import spring.taxi.app.user.services.UserService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -18,12 +20,12 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
-    public User getById(@PathVariable long id){
+    public User getById(@PathVariable long id) {
         return userService.getById(id);
     }
 
     @PutMapping("/{id}/update")
-    public ResponseEntity<HttpStatus> update(@RequestBody User updUser, @PathVariable long id){
+    public ResponseEntity<HttpStatus> update(@RequestBody User updUser, @PathVariable long id) {
         if (userService.getById(id) != null) {
             userService.update(updUser, id);
             return ResponseEntity.ok(HttpStatus.OK);
@@ -31,12 +33,15 @@ public class UserController {
         return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping("/{id}/reviews")
-    public List<Integer> reviews(@PathVariable long id){
-        return userService.getReviews(id);
+    @GetMapping("/{id}/leaved_reviews")
+    public List<Review> leavedReviews(@PathVariable long id) {
+        return userService.getLeavedReviews(id);
     }
 
-
+    @GetMapping("/{id}/received_reviews")
+    public List<Review> receivedReviews(@PathVariable long id) {
+        return userService.getReceivedReviews(id);
+    }
 
 
 }
