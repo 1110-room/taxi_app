@@ -1,7 +1,6 @@
 package spring.taxi.app.ride.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -48,7 +47,14 @@ public class Ride {
     @Enumerated(value = EnumType.STRING)
     private RideStatus status = RideStatus.OPEN;
 
-    @OneToMany(mappedBy = "ride")
+    @ManyToMany
+    @JoinTable(
+            name = "ride_user",
+            joinColumns = @JoinColumn(name = "ride_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
     private List<User> members;
 
     @OneToOne
