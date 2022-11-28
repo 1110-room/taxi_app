@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface ReviewRepo extends JpaRepository<Review, Long> {
     List<Review> findAllByLeavingUserId(long id);
+
     List<Review> findAllByReceivingUserId(long id);
 }

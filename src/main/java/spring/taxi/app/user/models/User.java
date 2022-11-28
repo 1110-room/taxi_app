@@ -4,10 +4,13 @@ import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 import spring.taxi.app.ride.models.Ride;
 
 import javax.persistence.*;
-import javax.swing.text.View;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -22,9 +25,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotEmpty(message = "Name should not be empty")
     private String name;
 
+    @NotEmpty(message = "Surname should not be empty")
     private String surname;
+
+    @Length(min = 16, max = 16, message = "The number must be 16 digits")
+    private String cardNumber;
 
     @Enumerated(value = EnumType.STRING)
     private Role role = Role.USER;
@@ -32,13 +40,9 @@ public class User {
     private boolean ready = false;
 
     @OneToMany(mappedBy = "receivingUser")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-    @JsonIdentityReference(alwaysAsId = true)
     private List<Review> receivedReviews;
 
     @OneToMany(mappedBy = "leavingUser")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-    @JsonIdentityReference(alwaysAsId = true)
     private List<Review> leavedReviews;
 
     @ManyToMany(mappedBy = "members")
@@ -48,19 +52,23 @@ public class User {
 
     @OneToOne(mappedBy = "owner")
     @Transient
-    private Ride ownersRide;
+    private Ride ownersRide; // ссылка на поездку, если это владелец
 
     public boolean isOwner() {
-        return ownersRide == null;
+        return ownersRide != null;
     }
 
-    public User(String name, String surname, Role role, boolean ready, List<Ride> ride, Ride ownersRide) {
+
+    public User(String name, String surname, Role role, boolean ready, List<Review> receivedReviews,
+                List<Review> leavedReviews, List<Ride> ride, Ride ownersRide, String cardNumber) {
         this.name = name;
         this.surname = surname;
         this.role = role;
         this.ready = ready;
-//        this.reviews = reviews;
+        this.receivedReviews = receivedReviews;
+        this.leavedReviews = leavedReviews;
         this.ride = ride;
         this.ownersRide = ownersRide;
+        this.cardNumber = cardNumber;
     }
 }

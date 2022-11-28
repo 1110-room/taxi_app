@@ -7,8 +7,9 @@ import spring.taxi.app.user.models.Review;
 import spring.taxi.app.user.models.User;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepo extends JpaRepository<User, Long> {
-
+    Optional<User> findByCardNumber(String number);
 }
