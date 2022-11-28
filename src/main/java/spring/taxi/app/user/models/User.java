@@ -22,6 +22,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    private long vkId;
+
     private String name;
 
     private String surname;
@@ -54,12 +56,20 @@ public class User {
         return ownersRide == null;
     }
 
-    public User(String name, String surname, Role role, boolean ready, List<Ride> ride, Ride ownersRide) {
+    public User(long vkId, String name, String surname) {
+        this.vkId = vkId;
+        this.name = name;
+        this.surname = surname;
+    }
+
+    public User(long vkId, String name, String surname, Role role, boolean ready, List<Review> receivedReviews, List<Review> leavedReviews, List<Ride> ride, Ride ownersRide) {
+        this.vkId = vkId;
         this.name = name;
         this.surname = surname;
         this.role = role;
         this.ready = ready;
-//        this.reviews = reviews;
+        this.receivedReviews = receivedReviews;
+        this.leavedReviews = leavedReviews;
         this.ride = ride;
         this.ownersRide = ownersRide;
     }

@@ -1,20 +1,36 @@
 package spring.taxi.app.config.security;
 
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
+import org.springframework.security.oauth2.client.http.OAuth2ErrorResponseErrorHandler;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver;
+import org.springframework.web.client.RestTemplate;
+import spring.taxi.app.user.vk_auth.CustomOAuth2UserService;
+import spring.taxi.app.user.vk_auth.CustomTokenResponseConverter;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver() {
@@ -24,40 +40,48 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-//                .authenticationProvider(daoAuthenticationProvider())
-                .csrf().disable()
-                .authorizeHttpRequests((requests) -> requests
-//                        .antMatchers("/profile").hasAuthority(Permission.DEVELOPERS_READ.getPermission())
-//                        .antMatchers("/following").hasAuthority(Permission.DEVELOPERS_READ.getPermission())
-//                        .antMatchers("/admin").hasRole(Permission.DEVELOPERS_WRITE.getPermission())
-                        .anyRequest().permitAll()
+                .authorizeRequests(a -> a
+                        .antMatchers("/", "/error", "/webjars/**").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .formLogin((form) -> form
-                        .loginPage("/login")
-                        .permitAll()
-                        .defaultSuccessUrl("/")
+                .exceptionHandling(e -> e
+                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 )
-                .logout((logout) -> logout
-                        .permitAll()
-                        .invalidateHttpSession(true)
-                        .clearAuthentication(true)
-                        .deleteCookies("JSESSIONID")
-                        .logoutSuccessUrl("/login")
-                );
+                .csrf(c -> c
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                )
+                .logout(l -> l
+                        .logoutSuccessUrl("/").permitAll()
+                )
+                .oauth2Login()
+                //Access token Endpoint
+                .tokenEndpoint()
+                .accessTokenResponseClient(accessTokenResponseClient())
+                //Userinfo endpoint
+                .and()
+                .userInfoEndpoint()
+                .userService(customOAuth2UserService);
 
         return http.build();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
-    }
+    public OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient() {
 
-//    @Bean
-//    public DaoAuthenticationProvider daoAuthenticationProvider() {
-//        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-//        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-//        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
-//        return daoAuthenticationProvider;
-//    }
+        DefaultAuthorizationCodeTokenResponseClient accessTokenResponseClient =
+                new DefaultAuthorizationCodeTokenResponseClient();
+
+        OAuth2AccessTokenResponseHttpMessageConverter tokenResponseHttpMessageConverter =
+                new OAuth2AccessTokenResponseHttpMessageConverter();
+
+        tokenResponseHttpMessageConverter.setTokenResponseConverter(new CustomTokenResponseConverter());
+
+        RestTemplate restTemplate = new RestTemplate(Arrays.asList(
+                new FormHttpMessageConverter(), tokenResponseHttpMessageConverter));
+
+        restTemplate.setErrorHandler(new OAuth2ErrorResponseErrorHandler());
+
+        accessTokenResponseClient.setRestOperations(restTemplate);
+        return accessTokenResponseClient;
+    }
 }
