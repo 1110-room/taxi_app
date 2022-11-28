@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/base_name"
+    username: postgres
+    password: password
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  thymeleaf:
+    cache: false
+  security:
+    oauth2:
+      client:
+        registration:
+          vk:
+            client-id: client-id
+            client-secret: client-secret
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            #use post, as vk needs clientId and clientSecret as request params and does not accept Basic auth
+            client-authentication-method: post
+            authorization-grant-type: authorization_code
+            scope: email
+        provider:
+          vk:
+            #revoke=1 needs to always show vk dialog
+            authorization-uri: https://oauth.vk.com/authorize?revoke=1
+            token-uri: https://oauth.vk.com/access_token
+            user-info-uri: https://api.vk.com/method/users.get?v=5.131&fields=photo_max
+            user-name-attribute: first_name

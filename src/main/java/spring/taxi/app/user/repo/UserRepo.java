@@ -11,5 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepo extends JpaRepository<User, Long> {
+    Optional<User> findByVkId(long vkId);
     Optional<User> findByCardNumber(String number);
 }

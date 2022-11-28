@@ -4,13 +4,10 @@ import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
 import spring.taxi.app.ride.models.Ride;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.swing.text.View;
 import java.util.List;
 
 @Entity
@@ -24,6 +21,8 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    private long vkId;
 
     @NotEmpty(message = "Name should not be empty")
     private String name;
@@ -58,9 +57,14 @@ public class User {
         return ownersRide != null;
     }
 
+    public User(long vkId, String name, String surname) {
+        this.vkId = vkId;
+        this.name = name;
+        this.surname = surname;
+    }
 
-    public User(String name, String surname, Role role, boolean ready, List<Review> receivedReviews,
-                List<Review> leavedReviews, List<Ride> ride, Ride ownersRide, String cardNumber) {
+    public User(long vkId, String name, String surname, Role role, boolean ready, List<Review> receivedReviews, List<Review> leavedReviews, List<Ride> ride, Ride ownersRide) {
+        this.vkId = vkId;
         this.name = name;
         this.surname = surname;
         this.role = role;
