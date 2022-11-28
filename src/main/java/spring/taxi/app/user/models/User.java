@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 import spring.taxi.app.ride.models.Ride;
 
 import javax.persistence.*;
 import javax.swing.text.View;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Entity

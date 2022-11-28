@@ -1,7 +1,6 @@
 package spring.taxi.app.user.services;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import spring.taxi.app.user.models.Review;
@@ -9,8 +8,9 @@ import spring.taxi.app.user.models.User;
 import spring.taxi.app.user.repo.ReviewRepo;
 import spring.taxi.app.user.repo.UserRepo;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
