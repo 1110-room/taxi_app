@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 import spring.taxi.app.user.models.User;
 
@@ -58,8 +57,6 @@ public class Ride {
 
     @OneToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
-//    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-//    @JsonIdentityReference(alwaysAsId=true)
     @JsonIncludeProperties(value = {"id", "name", "surname"})
     private User owner;
 

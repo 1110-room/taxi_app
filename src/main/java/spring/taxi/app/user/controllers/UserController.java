@@ -6,6 +6,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import spring.taxi.app.user.models.Review;
 import spring.taxi.app.user.models.User;
+import spring.taxi.app.user.services.ReviewService;
 import spring.taxi.app.user.services.UserService;
 import spring.taxi.app.user.util.ErrorResponse;
 
@@ -19,6 +20,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final ReviewService reviewService;
 
     @GetMapping("/{id}")
     public User getById(@PathVariable long id) {
@@ -39,12 +41,12 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{id}/leaved_reviews")
+    @GetMapping("/{id}/leaved-reviews")
     public List<Review> leavedReviews(@PathVariable long id) {
         return userService.getLeavedReviews(id);
     }
 
-    @GetMapping("/{id}/received_reviews")
+    @GetMapping("/{id}/received-reviews")
     public List<Review> receivedReviews(@PathVariable long id) {
         return userService.getReceivedReviews(id);
     }
@@ -58,6 +60,18 @@ public class UserController {
             );
         }
         userService.create(user);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/leave-review")
+    public ResponseEntity<?> leaveReview(@RequestBody Review review) {
+
+        List<String> errors = reviewService.add(review);
+        if (!errors.isEmpty()) {
+            return ResponseEntity.badRequest().body(
+                    new ErrorResponse(errors, LocalDateTime.now())
+            );
+        }
         return ResponseEntity.ok().build();
     }
 }

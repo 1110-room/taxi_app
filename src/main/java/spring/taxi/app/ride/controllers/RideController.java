@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import spring.taxi.app.ride.models.Ride;
-import spring.taxi.app.ride.models.RideStatus;
 import spring.taxi.app.ride.repos.RideRepo;
 import spring.taxi.app.user.services.UserService;
 
@@ -16,7 +15,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RideController {
     private final RideRepo rideRepo;
-    private final UserService userService;
 
     @PostMapping("/create")
     public ResponseEntity<?> createRide(@RequestBody Ride ride) {
