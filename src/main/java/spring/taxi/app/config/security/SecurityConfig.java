@@ -44,7 +44,7 @@ public class SecurityConfig {
         http
                 .authorizeRequests(a -> a
                         .antMatchers("/", "/error", "/webjars/**").permitAll()
-                        .anyRequest().authenticated()
+//                        .anyRequest().authenticated()
                 )
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
@@ -57,17 +57,16 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                         .logoutSuccessUrl("/")
                 )
-                .csrf(c -> c.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                .csrf().disable()
+//                .csrf(c -> c.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
                 .oauth2Login()
                 .loginPage("/login")
                 .authorizationEndpoint(authorizationEndpoint ->
                         authorizationEndpoint
                                 .baseUri("/login/auth")
                 )
-                //Access token Endpoint
                 .tokenEndpoint()
                 .accessTokenResponseClient(accessTokenResponseClient())
-                //Userinfo endpoint
                 .and()
                 .userInfoEndpoint()
                 .userService(customOAuth2UserService);

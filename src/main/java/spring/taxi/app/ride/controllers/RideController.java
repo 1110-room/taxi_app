@@ -6,9 +6,17 @@ import org.springframework.web.bind.annotation.*;
 import spring.taxi.app.ride.models.Ride;
 import spring.taxi.app.ride.models.RideStatus;
 import spring.taxi.app.ride.repos.RideRepo;
+import spring.taxi.app.ride.services.RideService;
+import spring.taxi.app.ride.util.TaxiModel;
+import spring.taxi.app.ride.util.TaxiParser;
+import spring.taxi.app.user.models.User;
 import spring.taxi.app.user.services.UserService;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 
 @RestController
@@ -16,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RideController {
     private final RideRepo rideRepo;
+    private final RideService rideService;
     private final UserService userService;
 
     @PostMapping("/create")
@@ -26,13 +35,22 @@ public class RideController {
 
     @PutMapping("/change-status")
     public ResponseEntity<?> changeStatus(@RequestBody Ride reqRide) {
-        Ride ride = rideRepo.findById(reqRide.getId()).orElse(null);
-        if (ride != null) {
-            ride.setStatus(reqRide.getStatus());
-            rideRepo.save(ride);
-            return ResponseEntity.ok().build();
+        String result = rideService.changeStatus(reqRide);
+        if (!result.isEmpty()) {
+            return ResponseEntity.badRequest().body(result);
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/set-owner")
+    public ResponseEntity<?> setRideOwner(@RequestBody Map<String, Object> body) {
+
+        String result = rideService.changeRideOwner(body);
+        if (!result.isEmpty()) {
+            return ResponseEntity.badRequest().body(result);
+        }
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/history")
