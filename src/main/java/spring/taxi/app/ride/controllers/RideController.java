@@ -7,9 +7,12 @@ import spring.taxi.app.ride.models.Ride;
 import spring.taxi.app.ride.models.RideStatus;
 import spring.taxi.app.ride.repos.RideRepo;
 import spring.taxi.app.ride.services.RideService;
+import spring.taxi.app.ride.util.TaxiModel;
+import spring.taxi.app.ride.util.TaxiParser;
 import spring.taxi.app.user.models.User;
 import spring.taxi.app.user.services.UserService;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,13 +35,11 @@ public class RideController {
 
     @PutMapping("/change-status")
     public ResponseEntity<?> changeStatus(@RequestBody Ride reqRide) {
-        Ride ride = rideRepo.findById(reqRide.getId()).orElse(null);
-        if (ride != null) {
-            ride.setStatus(reqRide.getStatus());
-            rideRepo.save(ride);
-            return ResponseEntity.ok().build();
+        String result = rideService.changeStatus(reqRide);
+        if (!result.isEmpty()) {
+            return ResponseEntity.badRequest().body(result);
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/set-owner")

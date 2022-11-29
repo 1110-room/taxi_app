@@ -4,10 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import spring.taxi.app.ride.models.Ride;
+import spring.taxi.app.ride.models.RideStatus;
 import spring.taxi.app.ride.repos.RideRepo;
+import spring.taxi.app.ride.util.TaxiModel;
+import spring.taxi.app.ride.util.TaxiParser;
 import spring.taxi.app.user.models.User;
 import spring.taxi.app.user.services.UserService;
 
+import java.io.IOException;
 import java.util.Map;
 
 @Service
@@ -18,6 +22,28 @@ public class RideService {
 
     public Ride findById(long id) {
         return rideRepo.findById(id).orElse(null);
+    }
+
+    public String changeStatus(Ride reqRide) {
+        Ride ride = findById(reqRide.getId());
+        if (ride != null) {
+            ride.setStatus(reqRide.getStatus());
+            if (ride.getStatus() == RideStatus.FULL
+                    && !ride.getAddressFrom().isEmpty()
+                    && !ride.getAddressTo().isEmpty())
+            {
+                TaxiModel taxiData;
+                try {
+                    taxiData = TaxiParser.getInfo();
+                    ride.setCost((int) taxiData.getEconom().getPrice());
+                } catch (IOException e) {
+                    return "Error getting taxi price";
+                }
+                rideRepo.save(ride);
+            }
+            return "";
+        }
+        return "Ride with ride_id = %d doesn't exists".formatted(reqRide.getId());
     }
 
     public String changeRideOwner(Map<String, Object> body) {

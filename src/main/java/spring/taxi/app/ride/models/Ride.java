@@ -37,7 +37,7 @@ public class Ride {
     @Column(name = "date_from")
     @JsonProperty("date_from")
     @DateTimeFormat
-    private Date dtFrom = new Date();
+    private Date dtFrom;
 
     @Column(name = "date_to")
     @JsonProperty("date_to")
@@ -45,7 +45,7 @@ public class Ride {
     private Date dtTo;
 
     @Enumerated(value = EnumType.STRING)
-    private RideStatus status = RideStatus.OPEN;
+    private RideStatus status;
 
     @ManyToMany
     @JoinTable(
@@ -58,9 +58,24 @@ public class Ride {
 
     @OneToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
-//    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-//    @JsonIdentityReference(alwaysAsId=true)
     @JsonIncludeProperties(value = {"id", "name", "surname"})
     private User owner;
 
+    public Ride(int cost, String addressFrom, Date dtFrom, RideStatus status) {
+        this.cost = cost;
+        this.addressFrom = addressFrom;
+        this.dtFrom = dtFrom;
+        this.status = status;
+    }
+
+    public Ride(int cost, String addressFrom, String addressTo, Date dtFrom, Date dtTo, RideStatus status, List<User> members, User owner) {
+        this.cost = cost;
+        this.addressFrom = addressFrom;
+        this.addressTo = addressTo;
+        this.dtFrom = dtFrom;
+        this.dtTo = dtTo;
+        this.status = status;
+        this.members = members;
+        this.owner = owner;
+    }
 }
