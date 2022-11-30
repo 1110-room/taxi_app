@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
+import spring.taxi.app.ride.util.taxi.TaxiSerivce;
 import spring.taxi.app.user.models.User;
 
 import javax.persistence.*;
@@ -25,6 +26,11 @@ public class Ride {
     private long id;
 
     private int cost;
+
+    private float distance;
+
+    @Enumerated(EnumType.STRING)
+    private TaxiSerivce taxiSerivce;
 
     @Column(name = "address_from")
     @JsonProperty("address_from")
@@ -77,5 +83,12 @@ public class Ride {
         this.status = status;
         this.members = members;
         this.owner = owner;
+    }
+
+    public int getRideTimeMinutes() {
+        if (dtTo != null && dtFrom != null) {
+            return (int) ((dtTo.getTime() - dtFrom.getTime()) / 1000 / 60);
+        }
+        return 0;
     }
 }

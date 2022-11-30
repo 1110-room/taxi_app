@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public abstract class Taxi {
-    protected double price;
-    protected double dist;
+    protected float price;
+    protected float distance;
     protected int time;
 }

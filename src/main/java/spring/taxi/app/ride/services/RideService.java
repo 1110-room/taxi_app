@@ -1,7 +1,6 @@
 package spring.taxi.app.ride.services;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import spring.taxi.app.ride.models.Ride;
 import spring.taxi.app.ride.models.RideStatus;
@@ -12,6 +11,8 @@ import spring.taxi.app.user.models.User;
 import spring.taxi.app.user.services.UserService;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Map;
 
 @Service
@@ -30,20 +31,30 @@ public class RideService {
             ride.setStatus(reqRide.getStatus());
             if (ride.getStatus() == RideStatus.FULL
                     && !ride.getAddressFrom().isEmpty()
-                    && !ride.getAddressTo().isEmpty())
-            {
-                TaxiModel taxiData;
+                    && !ride.getAddressTo().isEmpty()
+            ) {
+                // get coords by address from/to
+                double[][] coords = {{49.1843750053, 55.7448325943}, {49.1148428819, 55.7937841116}};
                 try {
-                    taxiData = TaxiParser.getInfo();
-                    ride.setCost((int) taxiData.getEconom().getPrice());
+                    TaxiModel taxiData = TaxiParser.getOptimalServiceInfo(coords);
+                    updateRide(ride, taxiData);
                 } catch (IOException e) {
                     return "Error getting taxi price";
                 }
-                rideRepo.save(ride);
             }
+            if (ride.getStatus() == RideStatus.FINISH && ride.getDtFrom() != null) {
+                ride.setDtTo(new Date());
+            }
+            rideRepo.save(ride);
             return "";
         }
         return "Ride with ride_id = %d doesn't exists".formatted(reqRide.getId());
+    }
+
+    private void updateRide(Ride ride, TaxiModel taxiData) {
+        ride.setCost((int) taxiData.getEconom().getPrice());
+        ride.setDistance(taxiData.getEconom().getDistance());
+        ride.setTaxiSerivce(taxiData.getSerivce());
     }
 
     public String changeRideOwner(Map<String, Object> body) {
