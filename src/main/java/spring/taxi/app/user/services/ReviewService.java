@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import spring.taxi.app.user.models.Review;
+import spring.taxi.app.user.models.User;
 import spring.taxi.app.user.repo.ReviewRepo;
 
 import java.util.ArrayList;
@@ -18,19 +19,24 @@ public class ReviewService {
     @Transactional
     public List<String> add(Review review) {
         List<String> errors = new ArrayList<>();
-        if (review.getLeavingUser() == null) {
-            if (userService.getById(review.getLeavingUser().getId()) == null) {
-                errors.add("Вас не существует!!!!!!!");
-            }
-        } else {
-            errors.add("Вас не существует!!!!!!!");
+
+        User leaving = review.getLeavingUser();
+        User receiving = review.getReceivingUser();
+
+        if (userService.getById(leaving.getId()) == null){
+            errors.add("Leaving user not found");
         }
 
-        if (review.getReceivingUser() != null) {
-            if (userService.getById(review.getReceivingUser().getId()) != null)
-                reviewRepo.save(review);
-        } else {
-            errors.add("Выберите пользователя которому Вы хотите оставить отзыв");
+        if (userService.getById(receiving.getId()) == null){
+            errors.add("Receiving user not found");
+        }
+
+        if (errors.isEmpty()){
+            Review review1 = new Review(review.getScore(),
+                    leaving,
+                    receiving);
+
+            reviewRepo.save(review1);
         }
 
         return errors;

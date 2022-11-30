@@ -8,7 +8,6 @@ import org.hibernate.validator.constraints.Length;
 import spring.taxi.app.ride.models.Ride;
 
 import javax.persistence.*;
-import javax.swing.text.View;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
@@ -77,5 +76,22 @@ public class User {
         this.leavedReviews = leavedReviews;
         this.ride = ride;
         this.ownersRide = ownersRide;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", vkId=" + vkId +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", cardNumber='" + cardNumber + '\'' +
+                ", role=" + role +
+                ", ready=" + ready +
+                ", receivedReviews=" + receivedReviews +
+                ", leavedReviews=" + leavedReviews +
+                ", ride=" + ride +
+                ", ownersRide=" + ownersRide +
+                '}';
     }
 }

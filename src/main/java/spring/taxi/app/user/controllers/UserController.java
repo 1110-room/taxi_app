@@ -65,6 +65,7 @@ public class UserController {
 
     @PostMapping("/leave-review")
     public ResponseEntity<?> leaveReview(@RequestBody Review review) {
+        System.out.println(review.toString());
 
         List<String> errors = reviewService.add(review);
         if (!errors.isEmpty()) {
