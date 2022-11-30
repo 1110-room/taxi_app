@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 import spring.taxi.app.ride.util.taxi.TaxiSerivce;
 import spring.taxi.app.user.models.User;

@@ -32,4 +32,19 @@ public class Review {
     @JsonIncludeProperties(value = {"id", "name", "surname"})
     private User receivingUser;
 
+    public Review(int score, User leavingUser, User receivingUser) {
+        this.score = score;
+        this.leavingUser = leavingUser;
+        this.receivingUser = receivingUser;
+    }
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "id=" + id +
+                ", score=" + score +
+                ", leavingUser=" + leavingUser +
+                ", receivingUser=" + receivingUser +
+                '}';
+    }
 }

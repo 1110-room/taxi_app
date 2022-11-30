@@ -8,7 +8,6 @@ import org.hibernate.validator.constraints.Length;
 import spring.taxi.app.ride.models.Ride;
 
 import javax.persistence.*;
-import javax.swing.text.View;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
@@ -65,16 +64,34 @@ public class User {
         this.surname = surname;
     }
 
-    public User(long vkId, String name, String surname, Role role, boolean ready, List<Review> receivedReviews, List<Review> leavedReviews, List<Ride> ride, Ride ownersRide) {
+    public User(long vkId, String name, String surname, String cardNumber, Role role, boolean ready,
+                List<Review> receivedReviews, List<Review> leavedReviews, List<Ride> ride, Ride ownersRide) {
         this.vkId = vkId;
         this.name = name;
         this.surname = surname;
+        this.cardNumber = cardNumber;
         this.role = role;
         this.ready = ready;
         this.receivedReviews = receivedReviews;
         this.leavedReviews = leavedReviews;
         this.ride = ride;
         this.ownersRide = ownersRide;
-        this.cardNumber = cardNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", vkId=" + vkId +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", cardNumber='" + cardNumber + '\'' +
+                ", role=" + role +
+                ", ready=" + ready +
+                ", receivedReviews=" + receivedReviews +
+                ", leavedReviews=" + leavedReviews +
+                ", ride=" + ride +
+                ", ownersRide=" + ownersRide +
+                '}';
     }
 }

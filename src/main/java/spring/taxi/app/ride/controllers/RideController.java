@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import spring.taxi.app.ride.models.Ride;
-import spring.taxi.app.ride.models.RideStatus;
 import spring.taxi.app.ride.repos.RideRepo;
 import spring.taxi.app.ride.services.RideService;
 import spring.taxi.app.ride.util.TaxiModel;
