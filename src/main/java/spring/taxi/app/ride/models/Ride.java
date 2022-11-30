@@ -39,13 +39,13 @@ public class Ride {
     @JsonProperty("address_to")
     private String addressTo;
 
-    @Column(name = "date_from")
-    @JsonProperty("date_from")
+    @Column(name = "dt_from")
+    @JsonProperty("dt_from")
     @DateTimeFormat
     private Date dtFrom;
 
-    @Column(name = "date_to")
-    @JsonProperty("date_to")
+    @Column(name = "dt_to")
+    @JsonProperty("dt_to")
     @DateTimeFormat
     private Date dtTo;
 
