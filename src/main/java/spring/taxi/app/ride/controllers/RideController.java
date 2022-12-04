@@ -6,16 +6,10 @@ import org.springframework.web.bind.annotation.*;
 import spring.taxi.app.ride.models.Ride;
 import spring.taxi.app.ride.repos.RideRepo;
 import spring.taxi.app.ride.services.RideService;
-import spring.taxi.app.ride.util.TaxiModel;
-import spring.taxi.app.ride.util.TaxiParser;
-import spring.taxi.app.user.models.User;
 import spring.taxi.app.user.services.UserService;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 
 @RestController

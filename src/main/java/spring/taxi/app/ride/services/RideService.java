@@ -52,7 +52,7 @@ public class RideService {
     }
 
     private void updateRide(Ride ride, TaxiModel taxiData) {
-        ride.setCost((int) taxiData.getEconom().getPrice());
+        ride.setPrice((int) taxiData.getEconom().getPrice());
         ride.setDistance(taxiData.getEconom().getDistance());
         ride.setTaxiSerivce(taxiData.getSerivce());
     }
