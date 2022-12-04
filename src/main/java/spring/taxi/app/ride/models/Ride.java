@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 import spring.taxi.app.ride.util.taxi.TaxiSerivce;
 import spring.taxi.app.user.models.User;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -24,11 +24,17 @@ public class Ride {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private int cost;
+    private int price;
+
+    @JsonProperty(value = "ride_size")
+    @Column(name = "ride_size")
+    private int rideSize;
 
     private float distance;
 
     @Enumerated(EnumType.STRING)
+    @JsonProperty(value = "taxi_service")
+    @Column(name = "taxi_service")
     private TaxiSerivce taxiSerivce;
 
     @Column(name = "address_from")
@@ -41,12 +47,10 @@ public class Ride {
 
     @Column(name = "dt_from")
     @JsonProperty("dt_from")
-    @DateTimeFormat
     private Date dtFrom;
 
     @Column(name = "dt_to")
     @JsonProperty("dt_to")
-    @DateTimeFormat
     private Date dtTo;
 
     @Enumerated(value = EnumType.STRING)
@@ -66,15 +70,18 @@ public class Ride {
     @JsonIncludeProperties(value = {"id", "name", "surname"})
     private User owner;
 
-    public Ride(int cost, String addressFrom, Date dtFrom, RideStatus status) {
-        this.cost = cost;
+    public Ride(int price, String addressFrom, Date dtFrom, RideStatus status) {
+        this.price = price;
         this.addressFrom = addressFrom;
         this.dtFrom = dtFrom;
         this.status = status;
     }
 
-    public Ride(int cost, String addressFrom, String addressTo, Date dtFrom, Date dtTo, RideStatus status, List<User> members, User owner) {
-        this.cost = cost;
+    public Ride(int price, int rideSize, float distance, TaxiSerivce taxiSerivce, String addressFrom, String addressTo, Date dtFrom, Date dtTo, RideStatus status, List<User> members, User owner) {
+        this.price = price;
+        this.rideSize = rideSize;
+        this.distance = distance;
+        this.taxiSerivce = taxiSerivce;
         this.addressFrom = addressFrom;
         this.addressTo = addressTo;
         this.dtFrom = dtFrom;
@@ -84,6 +91,7 @@ public class Ride {
         this.owner = owner;
     }
 
+    @JsonIgnore
     public int getRideTimeMinutes() {
         if (dtTo != null && dtFrom != null) {
             return (int) ((dtTo.getTime() - dtFrom.getTime()) / 1000 / 60);
