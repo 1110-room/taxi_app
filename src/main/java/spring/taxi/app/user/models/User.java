@@ -31,6 +31,10 @@ public class User {
     @NotEmpty(message = "Surname should not be empty")
     private String surname;
 
+    @Lob
+    @Column(name = "avatar", columnDefinition = "BLOB")
+    private byte[] avatar;
+
     @Length(min = 16, max = 16, message = "The number must be 16 digits")
     private String cardNumber;
 
@@ -58,10 +62,11 @@ public class User {
         return ownersRide != null;
     }
 
-    public User(long vkId, String name, String surname) {
+    public User(long vkId, String name, String surname, byte[] avatar) {
         this.vkId = vkId;
         this.name = name;
         this.surname = surname;
+        this.avatar = avatar;
     }
 
     public User(long vkId, String name, String surname, String cardNumber, Role role, boolean ready,

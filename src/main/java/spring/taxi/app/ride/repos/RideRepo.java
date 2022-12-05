@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import spring.taxi.app.ride.models.Ride;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
@@ -15,6 +16,7 @@ public interface RideRepo extends JpaRepository<Ride, Long> {
             nativeQuery = true)
     List<Ride> getUserRideHistory(@Param("user_id") long userId);
 
+    @Transactional
     @Query(value = "select r from Ride r where r.status = 'OPEN' order by r.dtFrom desc")
     List<Ride> getOpenRides();
 
