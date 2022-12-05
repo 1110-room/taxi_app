@@ -8,6 +8,9 @@ import spring.taxi.app.user.models.User;
 import spring.taxi.app.user.repo.ReviewRepo;
 import spring.taxi.app.user.repo.UserRepo;
 
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,12 +33,17 @@ public class UserService {
     public boolean registerUser(Map<String, Object> userAttributes) {
         try {
             long vkId = ((Number) userAttributes.get("id")).longValue();
-            String name = (String) userAttributes.get("first_name");
-            String surname = (String) userAttributes.get("last_name");
-
             User user = findByVkId(vkId);
             if (user == null) {
-                user = new User(vkId, name, surname);
+                String name = (String) userAttributes.get("first_name");
+                String surname = (String) userAttributes.get("last_name");
+
+                URL url = new URL(userAttributes.get("photo_max").toString());
+                InputStream in = new BufferedInputStream(url.openStream());
+                byte[] avatar = in.readAllBytes();
+                in.close();
+
+                user = new User(vkId, name, surname, avatar);
                 userRepo.save(user);
             }
             return true;

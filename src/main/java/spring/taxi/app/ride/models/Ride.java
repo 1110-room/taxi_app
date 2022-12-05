@@ -62,12 +62,12 @@ public class Ride {
             joinColumns = @JoinColumn(name = "ride_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    @JsonIncludeProperties(value = {"id", "name", "surname"})
+    @JsonIncludeProperties(value = {"id", "name", "surname", "avatar"})
     private List<User> members;
 
     @OneToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
-    @JsonIncludeProperties(value = {"id", "name", "surname"})
+    @JsonIncludeProperties(value = {"id", "name", "surname", "avatar"})
     private User owner;
 
     public Ride(int price, String addressFrom, Date dtFrom, RideStatus status) {
