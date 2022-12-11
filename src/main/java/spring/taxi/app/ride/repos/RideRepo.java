@@ -11,9 +11,22 @@ import java.util.List;
 
 @Repository
 public interface RideRepo extends JpaRepository<Ride, Long> {
-
-    @Query(value = "select r.* from rides r inner join ride_user ru on r.id = ru.ride_id where ru.user_id = :user_id",
-            nativeQuery = true)
+    @Transactional
+    @Query(value = """
+            select r.*
+            from (
+                select r.*
+                from rides r
+                    inner join ride_user ru
+                    on r.id = ru.ride_id
+                where ru.user_id = :user_id
+                union
+                select r.*
+                from rides r
+                where r.owner_id = :user_id
+            ) r
+            where r.status in ('MOVE', 'FINISH')
+            """, nativeQuery = true)
     List<Ride> getUserRideHistory(@Param("user_id") long userId);
 
     @Transactional

@@ -56,8 +56,8 @@ public class RideController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/history")
-    public List<Ride> userRideHistory(@RequestParam("user_id") long userId) {
+    @GetMapping("/history/{user_id}")
+    public List<Ride> userRideHistory(@PathVariable("user_id") long userId) {
         return rideRepo.getUserRideHistory(userId);
     }
 
