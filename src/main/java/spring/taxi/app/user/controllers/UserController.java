@@ -24,7 +24,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User getById(@PathVariable long id) {
-        return userService.getById(id);
+        return userService.findById(id);
     }
 
     @PutMapping("/{id}/update")
@@ -74,5 +74,15 @@ public class UserController {
             );
         }
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/change-card")
+    public ResponseEntity<?> changeCard(@RequestBody User user, BindingResult bindingResult) {
+        if (!bindingResult.hasErrors()) {
+            if (userService.changeCard(user)) {
+                return ResponseEntity.ok().build();
+            }
+        }
+        return ResponseEntity.badRequest().body("Incorrect data");
     }
 }

@@ -23,11 +23,11 @@ public class ReviewService {
         User leaving = review.getLeavingUser();
         User receiving = review.getReceivingUser();
 
-        if (userService.getById(leaving.getId()) == null){
+        if (userService.findById(leaving.getId()) == null){
             errors.add("Leaving user not found");
         }
 
-        if (userService.getById(receiving.getId()) == null){
+        if (userService.findById(receiving.getId()) == null){
             errors.add("Receiving user not found");
         }
 

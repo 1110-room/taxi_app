@@ -21,13 +21,22 @@ public class UserService {
     private final UserRepo userRepo;
     private final ReviewRepo reviewRepo;
 
-
-    public User getById(long id) {
+    public User findById(long id) {
         return userRepo.findById(id).orElse(null);
     }
 
     public User findByVkId(long vkId) {
         return userRepo.findByVkId(vkId).orElse(null);
+    }
+
+    public boolean changeCard(User gotUser) {
+        User user = findById(gotUser.getId());
+        if (user != null) {
+            user.setCardNumber(gotUser.getCardNumber());
+            userRepo.save(user);
+            return true;
+        }
+        return false;
     }
 
     public boolean registerUser(Map<String, Object> userAttributes) {
@@ -55,7 +64,7 @@ public class UserService {
 
     @Transactional
     public void update(User updUser, long id) {
-        User user = this.getById(id);
+        User user = this.findById(id);
         if (updUser.getName() != null)
             user.setName(updUser.getName());
         if (updUser.getSurname() != null)
