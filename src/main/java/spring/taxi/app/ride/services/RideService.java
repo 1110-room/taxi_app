@@ -11,7 +11,6 @@ import spring.taxi.app.user.models.User;
 import spring.taxi.app.user.services.UserService;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Map;
 
@@ -51,6 +50,25 @@ public class RideService {
         return "Ride with ride_id = %d doesn't exists".formatted(reqRide.getId());
     }
 
+    public Ride create(Ride ride) {
+        try {
+            User user = userService.findById(ride.getOwner().getId());
+            if (user == null) return null;
+            Ride newRide = new Ride(
+                    user,
+                    ride.getRideSize(),
+                    ride.getAddressFrom(),
+                    ride.getAddressTo(),
+                    ride.getTaxiSerivce()
+            );
+            rideRepo.save(newRide);
+            return newRide;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private void updateRide(Ride ride, TaxiModel taxiData) {
         ride.setPrice((int) taxiData.getEconom().getPrice());
         ride.setDistance(taxiData.getEconom().getDistance());
@@ -75,7 +93,7 @@ public class RideService {
         if (ride == null) {
             return "Ride with ride_id = %d doesn't exists".formatted(rideId);
         }
-        User owner = userService.getById(ownerId);
+        User owner = userService.findById(ownerId);
         if (owner == null) {
             return "User with owner_id = %d doesn't exists".formatted(ownerId);
         }

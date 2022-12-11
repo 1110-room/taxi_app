@@ -1,14 +1,18 @@
 package spring.taxi.app.ride.models;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import spring.taxi.app.ride.util.taxi.TaxiSerivce;
 import spring.taxi.app.user.models.User;
 
 import javax.persistence.*;
-import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -56,7 +60,7 @@ public class Ride {
     @Enumerated(value = EnumType.STRING)
     private RideStatus status;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "ride_user",
             joinColumns = @JoinColumn(name = "ride_id"),
@@ -70,11 +74,17 @@ public class Ride {
     @JsonIncludeProperties(value = {"id", "name", "surname", "avatar"})
     private User owner;
 
-    public Ride(int price, String addressFrom, Date dtFrom, RideStatus status) {
-        this.price = price;
+    public Ride(User owner, int rideSize, String addressFrom, String addressTo, TaxiSerivce taxiSerivce) {
+        this.owner = owner;
+        this.rideSize = rideSize;
+        this.taxiSerivce = taxiSerivce;
         this.addressFrom = addressFrom;
-        this.dtFrom = dtFrom;
-        this.status = status;
+        this.addressTo = addressTo;
+
+        this.price = 0;
+        this.distance = 0;
+        this.dtFrom = new Date();
+        this.status = RideStatus.OPEN;
     }
 
     public Ride(int price, int rideSize, float distance, TaxiSerivce taxiSerivce, String addressFrom, String addressTo, Date dtFrom, Date dtTo, RideStatus status, List<User> members, User owner) {

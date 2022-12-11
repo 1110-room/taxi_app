@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import spring.taxi.app.ride.models.Ride;
 import spring.taxi.app.ride.repos.RideRepo;
 import spring.taxi.app.ride.services.RideService;
+import spring.taxi.app.ride.util.taxi.TaxiSerivce;
+import spring.taxi.app.user.models.User;
 import spring.taxi.app.user.services.UserService;
 
 import java.util.List;
@@ -21,9 +23,17 @@ public class RideController {
     private final UserService userService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createRide(@RequestBody Ride ride) {
-        rideRepo.save(ride);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Ride> createRide(@RequestBody Ride ride) {
+        Ride newRide = rideService.create(ride);
+        if (newRide != null) {
+            return ResponseEntity.ok().body(newRide);
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping("/{id}")
+    public Ride getById(@PathVariable long id) {
+        return rideService.findById(id);
     }
 
     @PutMapping("/change-status")
@@ -54,5 +64,10 @@ public class RideController {
     @GetMapping("/open-line")
     public List<Ride> getOpenRidesLine() {
         return rideRepo.getOpenRides();
+    }
+
+    @GetMapping("/taxi-services")
+    public List<TaxiSerivce> getTaxiServices() {
+        return List.of(TaxiSerivce.values());
     }
 }

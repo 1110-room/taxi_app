@@ -49,15 +49,18 @@ public class User {
     @OneToMany(mappedBy = "leavingUser")
     private List<Review> leavedReviews;
 
-    @ManyToMany(mappedBy = "members")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-    @JsonIdentityReference(alwaysAsId = true)
-    private List<Ride> ride;
+    @ManyToMany(mappedBy = "members", fetch = FetchType.EAGER)
+    @JsonIncludeProperties(value = {"id"})
+//    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+//    @JsonIdentityReference(alwaysAsId = true)
+    private List<Ride> rides;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "owner")
     @Transient
     private Ride ownersRide; // ссылка на поездку, если это владелец
 
+    @JsonIgnore
     public boolean isOwner() {
         return ownersRide != null;
     }
@@ -70,7 +73,7 @@ public class User {
     }
 
     public User(long vkId, String name, String surname, String cardNumber, Role role, boolean ready,
-                List<Review> receivedReviews, List<Review> leavedReviews, List<Ride> ride, Ride ownersRide) {
+                List<Review> receivedReviews, List<Review> leavedReviews, List<Ride> rides, Ride ownersRide) {
         this.vkId = vkId;
         this.name = name;
         this.surname = surname;
@@ -79,7 +82,7 @@ public class User {
         this.ready = ready;
         this.receivedReviews = receivedReviews;
         this.leavedReviews = leavedReviews;
-        this.ride = ride;
+        this.rides = rides;
         this.ownersRide = ownersRide;
     }
 
@@ -95,7 +98,7 @@ public class User {
                 ", ready=" + ready +
                 ", receivedReviews=" + receivedReviews +
                 ", leavedReviews=" + leavedReviews +
-                ", ride=" + ride +
+                ", rides=" + rides +
                 ", ownersRide=" + ownersRide +
                 '}';
     }
