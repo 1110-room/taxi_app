@@ -22,9 +22,14 @@ public class UserController {
     private final UserService userService;
     private final ReviewService reviewService;
 
-    @GetMapping("/{id}")
-    public User getById(@PathVariable long id) {
+    @GetMapping("")
+    public User getById(@RequestParam("id") long id) {
         return userService.findById(id);
+    }
+
+    @GetMapping("/vk")
+    public User getByVkId(@RequestParam("id") long vkId) {
+        return userService.findByVkId(vkId);
     }
 
     @PutMapping("/{id}/update")
@@ -77,12 +82,13 @@ public class UserController {
     }
 
     @PutMapping("/change-card")
-    public ResponseEntity<?> changeCard(@RequestBody User user, BindingResult bindingResult) {
+    public ResponseEntity<User> changeCard(@RequestBody User user, BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {
-            if (userService.changeCard(user)) {
-                return ResponseEntity.ok().build();
+            User editedUser = userService.changeCard(user);
+            if (editedUser != null) {
+                return ResponseEntity.ok().body(editedUser);
             }
         }
-        return ResponseEntity.badRequest().body("Incorrect data");
+        return ResponseEntity.badRequest().build();
     }
 }

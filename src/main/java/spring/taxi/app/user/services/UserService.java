@@ -29,14 +29,13 @@ public class UserService {
         return userRepo.findByVkId(vkId).orElse(null);
     }
 
-    public boolean changeCard(User gotUser) {
+    public User changeCard(User gotUser) {
         User user = findById(gotUser.getId());
         if (user != null) {
             user.setCardNumber(gotUser.getCardNumber());
-            userRepo.save(user);
-            return true;
+            return userRepo.save(user);
         }
-        return false;
+        return null;
     }
 
     public boolean registerUser(Map<String, Object> userAttributes) {
